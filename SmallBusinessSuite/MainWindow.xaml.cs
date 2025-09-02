@@ -958,6 +958,7 @@ namespace SmallBusinessSuite {
             bool canCreate = true;
             string msgTitle = "Shift Record Error";
             Employee employee = (Employee)EmployeeSelect.SelectedValue;
+            Client client = (Client)ClientSelect.SelectedValue;
             DateTime? date = ShiftDate.SelectedDate;
             double hours = 0;
 
@@ -968,6 +969,11 @@ namespace SmallBusinessSuite {
 
             if (ShiftDate.SelectedDate == null) {
                 MessageBox.Show("Please input a valid shift date.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                canCreate = false;
+            }
+
+            if (client == null) {
+                MessageBox.Show("Please select a client for the shift?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 canCreate = false;
             }
 
