@@ -1195,7 +1195,7 @@ namespace SmallBusinessSuite {
 
         private void ExecutePayrollJob() {
             PayPeriod period = (PayPeriod)PayPeriod.SelectedValue;
-            Payroll lastRun = dbInterface.GetPayrolls().OrderByDescending(x => x.Date).First();
+            Payroll lastRun = dbInterface.GetPayrolls().OrderByDescending(x => x.Date).FirstOrDefault();
 
             PayrollJob(period, lastRun);
         }
