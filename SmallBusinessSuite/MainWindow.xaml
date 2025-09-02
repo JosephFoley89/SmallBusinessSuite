@@ -285,12 +285,12 @@
                         </TabItem>
                         <TabItem Header="Hours">
                             <Grid>
-                                <Label Content="Employee:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="75"/>
-                                <ComboBox x:Name="ShiftEmployeeSelect" Margin="85,66,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="130"/>
-                                <Label Content="Month:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Width="75"/>
-                                <ComboBox x:Name="ShiftMonthSelect" HorizontalAlignment="Left" Margin="85,38,0,0" VerticalAlignment="Top" Width="130"/>
                                 <Label Content="Year:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Width="75"/>
                                 <ComboBox x:Name="ShiftYearSelect" HorizontalAlignment="Left" Margin="85,11,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Label Content="Month:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ShiftMonthSelect" HorizontalAlignment="Left" Margin="85,38,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Label Content="Employee:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ShiftEmployeeSelect" Margin="85,66,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="130"/>
                                 <Button Content="Execute" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top" Width="100" Click="ExecuteShiftReport_Click"/>
                                 <Button Content="Clear Values" HorizontalAlignment="Left" Margin="115,111,0,0" VerticalAlignment="Top" Width="100" Click="ClearShiftReport_Click"/>
                                 <DataGrid IsReadOnly="True" x:Name="ShiftReportData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,-4" AutoGenerateColumns="False">
