@@ -8,6 +8,8 @@ This software is intended to help small businesses track a number of common conc
 ### What to Expect
 The SmallBusinessSuite application will create the necessary files and directories associated with them (.json config file, .dotx MS word template, and SQLite database file and its tables) upon launch. Once invoicing has begun, a sub-folder will be created in the previously created directory (C:\SmallBusinessSuite\Invoices\[client-name]\invoice-file.docx).
 
+This application is intended to be simple in nature. As a result, many data models are missing properties that one would expect, i.e. an employee's hire date or HR actions. Reporting functionality in this software is also limited as a result.
+
 ### Features
 #### Create, Read, Update, Delete
 - Employee records
@@ -22,6 +24,7 @@ The SmallBusinessSuite application will create the necessary files and directori
 #### Basic Reporting
 - Monthly Balance Information
 - Expense, Revenue, Shift records
+- Reporting can be expanded through an ODBC connection to PowerBI or Tableau
   
 #### Basic Payroll
 Payroll is manually run on periods that are one week long starting and ending on Friday. All shifts in the period for which payroll is ran are gathered and payment records are generated. The software does not send cheques, but allows for the user to determine who to send cheques to and in what amounts.
