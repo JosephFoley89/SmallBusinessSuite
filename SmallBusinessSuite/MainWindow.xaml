@@ -1,0 +1,434 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:adonisUi="clr-namespace:AdonisUI;assembly=AdonisUI"
+        xmlns:adonisControls="clr-namespace:AdonisUI.Controls;assembly=AdonisUI"
+        xmlns:local="clr-namespace:SmallBusinessSuite"
+        x:Class="SmallBusinessSuite.MainWindow"
+        mc:Ignorable="d"
+        Title="SmallBusinessSuite" Height="700" Width="1000">
+    <Window.Style>
+        <Style TargetType="{x:Type Window}" BasedOn="{StaticResource {x:Type Window}}"/>
+    </Window.Style>
+    <Grid>
+        <TabControl x:Name="NavigationPanel">
+            <TabItem Header="Timekeeping">
+                <TabControl>
+                    <TabItem Header="Time Entry">
+                        <Grid>
+                            <Label Content="Employee:" HorizontalAlignment="Left" Margin="8,16,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ComboBox x:Name="EmployeeSelect" HorizontalAlignment="Left" Margin="85,12,0,0" VerticalAlignment="Top" Width="120"/>
+                            <Label Content="Date:" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top" Width="75"/>
+                            <DatePicker x:Name="ShiftDate" HorizontalAlignment="Left" Margin="85,42,0,0" VerticalAlignment="Top" Width="120"/>
+                            <Label Content="Hours:" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top" Width="70"/>
+                            <TextBox x:Name="HoursWorked" HorizontalAlignment="Left" Margin="85,73,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="120"/>
+                            <Label Content="Client:" HorizontalAlignment="Left" Margin="217,16,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ComboBox x:Name="ClientSelect" HorizontalAlignment="Left" Margin="268,12,0,0" VerticalAlignment="Top" Width="120"/>
+                            <Button x:Name="AddShift" Content="Add Record" HorizontalAlignment="Left" Margin="7,107,0,0" VerticalAlignment="Top" Width="100" Click="AddShift_Click"/>
+                            <Button x:Name="UpdateShift" Content="Update Record" HorizontalAlignment="Left" Margin="112,107,0,0" VerticalAlignment="Top" Width="100" Click="UpdateShift_Click"/>
+                            <Button x:Name="RemoveShift" Content="Remove Record" HorizontalAlignment="Left" Margin="217,107,0,0" VerticalAlignment="Top" Width="100" Click="RemoveShift_Click"/>
+                            <DataGrid IsReadOnly="True" x:Name="ShiftData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,0" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Employee" Binding="{Binding Employee}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Hours Worked" Binding="{Binding TimeWorked}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Earned" Binding="{Binding AmountEarned, StringFormat=C}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Client" Binding="{Binding Client}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+            <TabItem Header="Human Capital">
+                <TabControl>
+                    <TabItem Header="Employees">
+                        <Grid>
+                            <Label Content="Name:" HorizontalAlignment="Left" Margin="7,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="EmployeeName" HorizontalAlignment="Left" Margin="90,14,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Hourly Rate:" HorizontalAlignment="Left" Margin="7,48,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="HourlyRate" HorizontalAlignment="Left" Margin="90,44,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Drive Time:" HorizontalAlignment="Left" Margin="7,76,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="DriveTime" HorizontalAlignment="Left" Margin="90,72,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Address:" HorizontalAlignment="Left" Margin="200,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="EmployeeAddress" HorizontalAlignment="Left" Margin="280,14,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="300"/>
+                            <Label Content="Phone:" HorizontalAlignment="Left" Margin="200,48,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="EmployeePhone" HorizontalAlignment="Left" Margin="280,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="100"/>
+                            <Button x:Name="CreateEmployee" Content="Add Record" Margin="7,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="CreateEmployee_Click"/>
+                            <Button x:Name="SaveEmployeeChanges" Content="Update Record" Margin="112,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="SaveEmployeeChanges_Click"/>
+                            <Button x:Name="DeleteEmployee" Content="Remove Record" Margin="217,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="DeleteEmployee_Click"/>
+                            <DataGrid IsReadOnly="True" x:Name="EmployeeData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,0" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Employee" Binding="{Binding Name}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Wage" Binding="{Binding HourlyRate, StringFormat=C}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Drive Time (Hours)" Binding="{Binding DriveTime}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Address" Binding="{Binding Address}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Phone Number" Binding="{Binding PhoneNumber}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Clients">
+                        <Grid>
+                            <Label Content="Client:" HorizontalAlignment="Left" Margin="7,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="ClientName" HorizontalAlignment="Left" Margin="90,14,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Contact:" HorizontalAlignment="Left" Margin="7,48,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="ContactName" HorizontalAlignment="Left" Margin="90,44,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Email:" HorizontalAlignment="Left" Margin="7,76,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="ClientEmail" HorizontalAlignment="Left" Margin="90,72,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Address:" HorizontalAlignment="Left" Margin="200,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="ClientAddress" HorizontalAlignment="Left" Margin="280,14,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="300"/>
+                            <Label Content="Phone:" HorizontalAlignment="Left" Margin="200,48,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="ClientPhone" HorizontalAlignment="Left" Margin="280,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="100"/>
+                            <Button x:Name="CreateClient" Content="Add Record" Margin="7,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="CreateClient_Click"/>
+                            <Button x:Name="SaveClientChanges" Content="Update Record" Margin="112,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="UpdateClient_Click"/>
+                            <Button x:Name="DeleteClient" Content="Remove Record" Margin="217,107,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="DeleteClient_Click"/>
+                            <DataGrid IsReadOnly="True" x:Name="ClientData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,0" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Client" Binding="{Binding Name}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Contact Name" Binding="{Binding Contact}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Email Address" Binding="{Binding Email}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Phone Number" Binding="{Binding PhoneNumber}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Address" Binding="{Binding Address}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+            <TabItem Header="Finances" Height="26" VerticalAlignment="Top">
+                <TabControl>
+                    <TabItem Header="Payroll">
+                        <Grid>
+                            <Label Content="Pay Period:" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="75" ToolTip="If you're running payroll, today's date should be the end date in the selection."/>
+                            <ComboBox x:Name="PayPeriod" HorizontalAlignment="Left" Margin="85,12,0,0" VerticalAlignment="Top" Width="235"/>
+                            <Button x:Name="RunPayroll" Content="Run Payroll" HorizontalAlignment="Left" Margin="10,121,0,0" VerticalAlignment="Top" Width="100" Click="RunPayroll_Click"/>
+                            <Button x:Name="RerunPayroll" Content="Update Payroll" Margin="115,121,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="ReRunPayroll_Click"/>
+                            <Button x:Name="DeletePayroll" Content="Delete Payroll" Margin="220,121,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="100" Click="RemovePayroll_Click"/>
+                            <DataGrid x:Name="PayrollPayments" d:ItemsSource="{Binding Payment}" Margin="730,10,10,0" Height="135" VerticalAlignment="Top" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
+                                    <DataGridTextColumn Header="Employee" Binding="{Binding Employee}"/>
+                                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <DataGrid x:Name="PayrollShifts" d:ItemsSource="{Binding}" Margin="325,10,0,0" HorizontalAlignment="Left" Width="400" Height="135" VerticalAlignment="Top" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Employee" Binding="{Binding Employee}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Client" Binding="{Binding Client}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Earned" Binding="{Binding AmountEarned, StringFormat=C}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <DataGrid IsReadOnly="True" x:Name="PayrollData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionMode="Single" Margin="0,150,0,0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"/>
+                                    <DataGridTextColumn Header="Period" Binding="{Binding Period}"/>
+                                    <DataGridTextColumn Header="Total" Binding="{Binding TotalPaid, StringFormat=C}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Invoice">
+                        <Grid>
+                            <WebBrowser x:Name="InvoicePreview" Margin="447,48,11,0"/>
+                            <Label Content="Recipient Company:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,18,0,0" Width="130"/>
+                            <ComboBox x:Name="InvoiceRecipient"  HorizontalAlignment="Left" Margin="290,14,0,0" VerticalAlignment="Top" Width="150" SelectionChanged="InvoiceRecipient_SelectionChanged"/>
+                            <Label Content="Invoice Date:" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Width="130"/>
+                            <DatePicker x:Name="InvoiceDate" HorizontalAlignment="Left" Margin="290,43,0,0" VerticalAlignment="Top" Width="150" SelectedDateChanged="InvoiceDate_SelectionChanged"/>
+                            <Label Content="Item Work Order:" HorizontalAlignment="Left" Margin="10,78,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="WorkOrder" HorizontalAlignment="Left" Margin="290,74,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="150"/>
+                            <Label Content="Item Description:" HorizontalAlignment="Left" Margin="10,107,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemDescription"  HorizontalAlignment="Left" Margin="291,103,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="150"/>
+                            <Label Content="Hours:" HorizontalAlignment="Left" Margin="10,135,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemHours" HorizontalAlignment="Left" Margin="291,131,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149" TextChanged="Item_TextChanged"/>
+                            <Label Content="Hourly Rate:" HorizontalAlignment="Left" Margin="10,164,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemRate" HorizontalAlignment="Left" Margin="291,160,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149"  TextChanged="Item_TextChanged"/>
+                            <Label Content="Amount:" HorizontalAlignment="Left" Margin="10,193,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemAmount" HorizontalAlignment="Left" Margin="291,189,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149"/>
+                            <Button x:Name="AddItem" Content="Add Item" HorizontalAlignment="Left" Margin="10,219,0,0" VerticalAlignment="Top" Click="AddInvoiceItem_Click" Width="100"/>
+                            <Button x:Name="UpdateItem" Content="Update Item" HorizontalAlignment="Left" Margin="171,219,0,0" VerticalAlignment="Top" Click="UpdateInvoiceItem_Click" Width="100"/>
+                            <Button x:Name="RemoveItem" Content="Remove Item" HorizontalAlignment="Left" Margin="340,219,0,0" VerticalAlignment="Top" Click="RemoveInvoiceItem_Click" Width="100"/>
+                            <DataGrid x:Name="Invoices" d:ItemsSource="{Binding}" Margin="0,248,0,208" SelectionChanged="Data_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Left" Width="442">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Invoice" Binding="{Binding}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Client" Binding="{Binding Client}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <DataGrid x:Name="InvoiceItems" d:ItemsSource="{Binding}" Margin="0,385,0,0" SelectionChanged="Data_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Left" Width="442">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Work Order" Binding="{Binding WorkOrder}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Description" Binding="{Binding Description}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Hours" Binding="{Binding Hours}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Rate" Binding="{Binding Rate, StringFormat=C}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Cost" Binding="{Binding Amount, StringFormat=C}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Invoice" Binding="{Binding Parent}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button x:Name="GenerateInvoice" Content="Generate Invoice" Margin="0,14,11,0" VerticalAlignment="Top" Click="GenerateInvoice_Click" HorizontalAlignment="Right" Width="110"/>
+                            <Button x:Name="AddInvoice" Content="Add Invoice" Margin="447,14,0,0" VerticalAlignment="Top" Click="AddInvoice_Click" HorizontalAlignment="Left" Width="110"/>
+                            <Button x:Name="UpdateInvoice" Content="Update Invoice" Margin="577,14,0,0" VerticalAlignment="Top" Click="UpdateInvoice_Click" HorizontalAlignment="Left" Width="110"/>
+                            <Button x:Name="RemoveInvoice" Content="Remove Invoice" Margin="0,14,135,0" VerticalAlignment="Top" Click="RemoveInvoice_Click" HorizontalAlignment="Right" Width="110"/>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Expenses">
+                        <Grid>
+                            <Label Content="Expense:" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox TextWrapping="NoWrap" x:Name="ExpenseName" HorizontalAlignment="Left" Margin="90,14,0,0" Text="" VerticalAlignment="Top" Width="132"/>
+                            <Label Content="Date:" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top" Width="75"/>
+                            <DatePicker x:Name="ExpenseDate" HorizontalAlignment="Left" Margin="91,43,0,0" VerticalAlignment="Top" Width="132"/>
+                            <Label Content="Category:" HorizontalAlignment="Left" Margin="10,78,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ComboBox x:Name="ExpenseType" HorizontalAlignment="Left" Margin="91,74,0,0" VerticalAlignment="Top" Width="132"/>
+                            <Label Content="Amount:" HorizontalAlignment="Left" Margin="227,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="ExpenseAmount" HorizontalAlignment="Left" Margin="312,14,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="100"/>
+                            <Button x:Name="AddExpense" Content="Add Record" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top" Width="100" Click="AddExpense_Click"/>
+                            <Button x:Name="UpdateExpense" Content="Update Record" HorizontalAlignment="Left" Margin="115,111,0,0" VerticalAlignment="Top" Width="100" Click="UpdateExpense_Click"/>
+                            <Button x:Name="RemoveExpense" Content="Remove Record" HorizontalAlignment="Left" Margin="220,111,0,0" VerticalAlignment="Top" Width="100" Click="RemoveExpense_Click"/>
+                            <CheckBox x:Name="IsRecurringExpense" Content="Recurring Expense" ToolTip="Recurring expenses are added on the first day of their interval." HorizontalAlignment="Left" Margin="242,46,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.53,0.293" Width="170" Click="IsRecurringExpense_Checked"/>
+                            <Label Content="Frequency:" HorizontalAlignment="Left" Margin="228,78,0,0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="0.592,1.427"/>
+                            <ComboBox x:Name="RF" HorizontalAlignment="Left" Margin="312,74,0,0" VerticalAlignment="Top" Width="100"/>
+                            <DataGrid IsReadOnly="True" x:Name="ExpenseData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,0" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Category" Binding="{Binding Type}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Cost" Binding="{Binding Amount, StringFormat=C}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Item" Binding="{Binding Item}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Recurring Charge" Binding="{Binding IsRecurring}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Recurrence" Binding="{Binding RecurrenceFrequency}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Revenue">
+                        <Grid>
+                            <Label Content="Source:" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="RevenueSource" HorizontalAlignment="Left" Margin="90,14,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Date:" HorizontalAlignment="Left" Margin="10,49,0,0" VerticalAlignment="Top" Width="75"/>
+                            <DatePicker x:Name="RevenueDate" HorizontalAlignment="Left" Margin="90,44,0,0" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Category:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="75"/>
+                            <ComboBox x:Name="RevenueType" HorizontalAlignment="Left" Margin="90,75,0,0" VerticalAlignment="Top" Width="100"/>
+                            <Label Content="Amount:" HorizontalAlignment="Left" Margin="195,18,0,0" VerticalAlignment="Top" Width="75"/>
+                            <TextBox x:Name="RevenueAmount" HorizontalAlignment="Left" Margin="282,14,0,0" TextWrapping="NoWrap"  Text="" VerticalAlignment="Top" Width="100"/>
+                            <Button x:Name="AddRevenue" Content="Add Record" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top" Width="100" Click="AddRevenue_Click"/>
+                            <Button x:Name="UpdateRevenue" Content="Update Record" HorizontalAlignment="Left" Margin="115,111,0,0" VerticalAlignment="Top" Width="100" Click="UpdateRevenue_Click"/>
+                            <Button x:Name="RemoveRevenue" Content="Remove Record" HorizontalAlignment="Left" Margin="220,111,0,0" VerticalAlignment="Top" Width="100" Click="RemoveRevenue_Click"/>
+                            <DataGrid IsReadOnly="True" x:Name="RevenueData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,0" AutoGenerateColumns="False" >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Type" Binding="{Binding Type}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Income Source" Binding="{Binding Item}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+            <TabItem Header="Reports">
+                <Grid>
+                    <TabControl x:Name="ReportMenu">
+                        <TabItem Header="Expense">
+                            <Grid>
+                                <Label Content="Year:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ExpenseYearSelect" HorizontalAlignment="Left" Margin="85,11,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Label Content="Month:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ExpenseMonthSelect" HorizontalAlignment="Left" Margin="85,38,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Label Content="Category:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ExpenseCategorySelect" HorizontalAlignment="Left" Margin="85,66,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Button Content="Execute" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top" Width="100" Click="ExecuteExpenseReport_Click"/>
+                                <Button Content="Clear Values" HorizontalAlignment="Left" Margin="116,111,0,0" VerticalAlignment="Top" Width="100" Click="ClearExpenseReport_Click"/>
+                                <DataGrid IsReadOnly="True" x:Name="ExpenseReportData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" AutoGenerateColumns="False" Margin="0,140,0,0">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Category" Binding="{Binding Type}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Cost" Binding="{Binding Amount, StringFormat=C}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Item" Binding="{Binding Item}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Recurrence" Binding="{Binding RecurrenceFrequency}"></DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Revenue">
+                            <Grid>
+                                <Label Content="Year:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="IncomeYearSelect" HorizontalAlignment="Left" Margin="85,11,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Label Content="Month:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="IncomeMonthSelect" HorizontalAlignment="Left" Margin="85,38,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Label Content="Category:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="IncomeCategorySelect" HorizontalAlignment="Left" Margin="85,66,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Button Content="Execute" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top" Width="100" Click="ExecuteRevenueReport_Click"/>
+                                <Button Content="Clear Values" HorizontalAlignment="Left" Margin="116,111,0,0" VerticalAlignment="Top" Width="100" Click="ClearRevenueReport_Click"/>
+                                <DataGrid IsReadOnly="True" x:Name="IncomeReportData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,0" AutoGenerateColumns="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Type" Binding="{Binding Type}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Income Source" Binding="{Binding Item}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}"></DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Hours">
+                            <Grid>
+                                <Label Content="Employee:" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ShiftEmployeeSelect" Margin="85,66,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="130"/>
+                                <Label Content="Month:" HorizontalAlignment="Left" Margin="10,42,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ShiftMonthSelect" HorizontalAlignment="Left" Margin="85,38,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Label Content="Year:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top" Width="75"/>
+                                <ComboBox x:Name="ShiftYearSelect" HorizontalAlignment="Left" Margin="85,11,0,0" VerticalAlignment="Top" Width="130"/>
+                                <Button Content="Execute" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top" Width="100" Click="ExecuteShiftReport_Click"/>
+                                <Button Content="Clear Values" HorizontalAlignment="Left" Margin="115,111,0,0" VerticalAlignment="Top" Width="100" Click="ClearShiftReport_Click"/>
+                                <DataGrid IsReadOnly="True" x:Name="ShiftReportData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" SelectionMode="Single" Margin="0,140,0,-4" AutoGenerateColumns="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Employee" Binding="{Binding Employee}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Hours Worked" Binding="{Binding TimeWorked}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Earned" Binding="{Binding AmountEarned, StringFormat=C}"></DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Financials">
+                            <Grid Margin="42,0,0,0" HorizontalAlignment="Left" Width="880">
+                                <Grid VerticalAlignment="Top" Height="70">
+                                    <Label Content="Year:" Margin="0,10,820,36"/>
+                                    <ComboBox x:Name="FinancialYear" Width="120" Margin="64,10,696,35" SelectionChanged="FinancialYear_SelectionChanged"/>
+                                    <Button x:Name="FYReset" Content="Clear Values" HorizontalAlignment="Left" Margin="200,9,0,0" VerticalAlignment="Top" Width="100" Click="FYReset_Click"/>
+                                </Grid>
+                                <StackPanel Margin="0,75,736,400">
+                                    <Label FontSize="18"  Content="January"/>
+                                    <Label x:Name="JanRevenue" Content="Revenue:"/>
+                                    <Label x:Name="JanExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="JanProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="149,75,581,400">
+                                    <Label FontSize="18"  Content="February"/>
+                                    <Label x:Name="FebRevenue" Content="Revenue:"/>
+                                    <Label x:Name="FebExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="FebProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="299,75,426,400">
+                                    <Label FontSize="18"  Content="March"/>
+                                    <Label x:Name="MarRevenue" Content="Revenue:"/>
+                                    <Label x:Name="MarExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="MarProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="454,75,276,400">
+                                    <Label FontSize="18"  Content="April"/>
+                                    <Label x:Name="AprRevenue" Content="Revenue:"/>
+                                    <Label x:Name="AprExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="AprProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="604,75,126,400">
+                                    <Label FontSize="18"  Content="May"/>
+                                    <Label x:Name="MayRevenue" Content="Revenue:"/>
+                                    <Label x:Name="MayExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="MayProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="754,75,10,400">
+                                    <Label FontSize="18"  Content="June"/>
+                                    <Label x:Name="JunRevenue" Content="Revenue:"/>
+                                    <Label x:Name="JunExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="JunProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,193,736,193">
+                                    <Label FontSize="18"  Content="July"/>
+                                    <Label x:Name="JulRevenue" Content="Revenue:"/>
+                                    <Label x:Name="JulExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="JulProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="149,193,586,193">
+                                    <Label FontSize="18"  Content="August"/>
+                                    <Label x:Name="AugRevenue" Content="Revenue:"/>
+                                    <Label x:Name="AugExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="AugProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="299,193,436,193">
+                                    <Label FontSize="18"  Content="September"/>
+                                    <Label x:Name="SepRevenue" Content="Revenue:"/>
+                                    <Label x:Name="SepExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="SepProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="448,193,282,193" RenderTransformOrigin="0.5,0.5">
+                                    <Label FontSize="18"  Content="October"/>
+                                    <Label x:Name="OctRevenue" Content="Revenue:"/>
+                                    <Label x:Name="OctExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="OctProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="604,193,131,193">
+                                    <Label FontSize="18"  Content="November"/>
+                                    <Label x:Name="NovRevenue" Content="Revenue:"/>
+                                    <Label x:Name="NovExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="NovProfit" Content="Profit:"/>
+                                </StackPanel>
+                                <StackPanel Margin="754,193,0,193">
+                                    <Label FontSize="18" Content="December"/>
+                                    <Label x:Name="DecRevenue" Content="Revenue:"/>
+                                    <Label x:Name="DecExpense" Content="Expense:"/>
+                                    <Separator FontWeight="Bold"/>
+                                    <Label x:Name="DecProfit" Content="Profit:"/>
+                                </StackPanel>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="App Settings">
+                <Grid VerticalAlignment="Center">
+                    <Grid HorizontalAlignment="Center">
+                        <Label Content="Use Dark Theme:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="119"/>
+                        <CheckBox x:Name="UseDarkTheme" Content="" HorizontalAlignment="Left" Margin="173,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                        <Label Content="Row Limit:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="119"/>
+                        <TextBox x:Name="RowLimit" HorizontalAlignment="Left" Margin="173,31,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="170"/>
+                        <Label Content="Business Name:" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Width="119"/>
+                        <TextBox x:Name="BusinessName" HorizontalAlignment="Left" Margin="173,59,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="170"/>
+                        <Label Content="Business Address:" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Width="119"/>
+                        <TextBox x:Name="BusinessAddress" HorizontalAlignment="Left" Margin="173,88,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="170"/>
+                        <Label Content="Business Phone:" HorizontalAlignment="Left" Margin="10,121,0,0" VerticalAlignment="Top" Width="119"/>
+                        <TextBox x:Name="BusinessPhone" HorizontalAlignment="Left" Margin="173,117,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="170"/>
+                        <Label Content="Business Email:" HorizontalAlignment="Left" Margin="10,148,0,0" VerticalAlignment="Top" Width="119"/>
+                        <TextBox x:Name="BusinessEmail" HorizontalAlignment="Left" Margin="173,144,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="170"/>
+                        <Label Content="Business Website:" HorizontalAlignment="Left" Margin="9,177,0,0" VerticalAlignment="Top" Width="120"/>
+                        <TextBox x:Name="BusinessURL" HorizontalAlignment="Left" Margin="173,173,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="170"/>
+                        <Label Content="Invoice Appreciation:" HorizontalAlignment="Left" Margin="10,229,0,0" VerticalAlignment="Top" Width="158"/>
+                        <RichTextBox Margin="173,202,0,0" HorizontalAlignment="Left" Width="170" Height="79" VerticalAlignment="Top">
+                            <FlowDocument>
+                                <Paragraph>
+                                    <Run x:Name="InvoiceAppreciation" Text=""/>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
+                        <Button x:Name="SaveSettings" Content="Save Settings" HorizontalAlignment="Left" Margin="9,286,0,0" VerticalAlignment="Top" Width="334" Click="SaveSettings_Click"/>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
