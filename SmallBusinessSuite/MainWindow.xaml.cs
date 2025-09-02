@@ -1,4 +1,5 @@
 ﻿using AdonisUI;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using SmallBusinessSuite.Data;
 using SmallBusinessSuite.Data.Enums;
 using SmallBusinessSuite.Data.Models;
@@ -6,6 +7,7 @@ using SmallBusinessSuite.Utilities;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SmallBusinessSuite {
     public partial class MainWindow : Window {
@@ -558,23 +560,29 @@ namespace SmallBusinessSuite {
         //EMPLOYEE CRUD
 
         private void CreateEmployee_Click(object sender, RoutedEventArgs e) {
-            string msgBoxTitle = "Employee Record Error";
+            List<string> errors = new List<string>();
+            string msgTitle = "Employee Record Error";
             bool canCreate = true;
             int driveTime;
             decimal wage;
 
+            if (EmployeeName.Text == "") {
+                errors.Add("Please input a name for the employee.");
+                canCreate = false;
+            }
+
             if (!Int32.TryParse(DriveTime.Text, out driveTime)) {
-                MessageBox.Show("Please input a valid whole number into the Drive Time field.", msgBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid whole number into the Drive Time field.");
                 canCreate = false;
             }
 
             if (!Decimal.TryParse(HourlyRate.Text, out wage)) {
-                MessageBox.Show("Please input a valid number into the Hourly Rate field.", msgBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number into the Hourly Rate field.");
                 canCreate = false;
             }
 
             if (dbInterface.EmployeeExists(EmployeeName.Text)) {
-                SaveEmployeeChanges_Click(sender, e);
+                errors.Add("This employee already exists. Please use the update functionality.");
                 canCreate = false;
             }
 
@@ -591,28 +599,31 @@ namespace SmallBusinessSuite {
                 );
 
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void SaveEmployeeChanges_Click(object sender, RoutedEventArgs e) {
+            List<string> errors = new List<string>();
             string msgBoxTitle = "Employee Record Error";
             bool canUpdate = true;
             int driveTime;
             decimal wage;
 
             if (SelectedEmployee == null) {
-                MessageBox.Show("Please select an Employee record to update.", msgBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select an Employee record to update.");
                 canUpdate = false;
             }
 
             if (!Int32.TryParse(DriveTime.Text, out driveTime)) {
-                MessageBox.Show("Please input a valid whole number into the Drive Time field.", msgBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid whole number into the Drive Time field.");
                 canUpdate = false;
             }
 
             if (!Decimal.TryParse(HourlyRate.Text, out wage)) {
-                MessageBox.Show("Please input a valid number into the Hourly Rate field.", msgBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 canUpdate = false;
+                errors.Add("Please input a valid number into the Hourly Rate field.");
             }
 
             if (canUpdate) {
@@ -623,6 +634,8 @@ namespace SmallBusinessSuite {
                 SelectedEmployee.PhoneNumber = EmployeePhone.Text;
                 dbInterface.UpdateEmployee(SelectedEmployee);
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -640,16 +653,18 @@ namespace SmallBusinessSuite {
         //CLIENT CRUD
 
         private void CreateClient_Click(object sender, RoutedEventArgs e) {
+            List<string> errors = new List<string>();
+            string msgTitle = "Client Record Error";
             bool canCreate = true;
 
             if (ClientName.Text == "") {
                 canCreate = false;
-                MessageBox.Show("Please input the Client's name. All other fields are not mandatory.", "Client Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input the Client's name. All other fields are not mandatory.");
             }
 
             if (dbInterface.ClientExists(ClientName.Text)) {
                 canCreate = false;
-                MessageBox.Show($"There is already a client in the record with {ClientName.Text} as its name. Did you intend to update the record?", "Client Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add($"There is already a client in the record with {ClientName.Text} as its name. Did you intend to update the record?");
             }
 
             if (canCreate) {
@@ -665,6 +680,8 @@ namespace SmallBusinessSuite {
                 );
 
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -684,6 +701,8 @@ namespace SmallBusinessSuite {
                 dbInterface.UpdateClient(SelectedClient);
 
                 UpdateLists();
+            } else {
+                MessageBox.Show("Please select a client record to remove.", "Client Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -702,31 +721,32 @@ namespace SmallBusinessSuite {
 
         private void AddExpense_Click(object sender, RoutedEventArgs e) {
             bool canCreate = true;
+            List<string> errors = new List<string>();
             string msgTitle = "Expense Record Error";
             decimal amount;
 
             if (!Decimal.TryParse(ExpenseAmount.Text, out amount)) {
-                MessageBox.Show("Please input a valid number in the Expense Amount field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number in the Expense Amount field.");
                 canCreate = false;
             }
 
             if (ExpenseDate.SelectedDate == null) {
-                MessageBox.Show("Please input a valid date in the Expense Date field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid date in the Expense Date field.");
                 canCreate = false;
             }
 
             if (ExpenseName.Text == "") {
-                MessageBox.Show("Please input a valid name in the Expense Name field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid name in the Expense Name field.");
                 canCreate = false;
             }
 
             if (ExpenseType.SelectedValue == null) {
-                MessageBox.Show("Please select a valid Expense Type.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid Expense Type.");
                 canCreate = false;
             }
 
             if ((bool)IsRecurringExpense.IsChecked && (Frequency)RF.SelectedValue == Frequency.OneTime) {
-                MessageBox.Show("Please select a valid recurrence frequency for the recurring charge.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid recurrence frequency for the recurring charge.");
                 canCreate = false;
             }
 
@@ -752,41 +772,44 @@ namespace SmallBusinessSuite {
                 }
 
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void UpdateExpense_Click(object sender, RoutedEventArgs e) {
             bool canUpdate = true;
+            List<string> errors = new List<string>();
             string msgTitle = "Expense Record Error";
             decimal amount;
 
             if (!Decimal.TryParse(ExpenseAmount.Text, out amount)) {
-                MessageBox.Show("Please input a valid number in the Expense Amount field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number in the Expense Amount field.");
                 canUpdate = false;
             }
 
             if (ExpenseDate.SelectedDate == null) {
-                MessageBox.Show("Please input a valid date in the Expense Date field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid date in the Expense Date field.");
                 canUpdate = false;
             }
 
             if (ExpenseName.Text == "") {
-                MessageBox.Show("Please input a valid name in the Expense Name field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid name in the Expense Name field.");
                 canUpdate = false;
             }
 
             if (ExpenseType.SelectedValue == null) {
-                MessageBox.Show("Please select a valid Expense Type.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid Expense Type.");
                 canUpdate = false;
             }
 
             if ((bool)IsRecurringExpense.IsChecked && (Frequency)RF.SelectedValue == Frequency.OneTime) {
-                MessageBox.Show("Please select a valid recurrence frequency for the recurring charge.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid recurrence frequency for the recurring charge.");
                 canUpdate = false;
             }
 
             if (SelectedExpense == null) {
-                MessageBox.Show("Please select an Expense record to update.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select an Expense record to update.");
                 canUpdate = false;
             }
 
@@ -820,10 +843,12 @@ namespace SmallBusinessSuite {
                         AddScheduledExpenses();
                     }
 
-                    UpdateLists();
+                        UpdateLists();
                 } else {
                     MessageBox.Show("Payroll expenses cannot be altered. Please utilize the Payroll tab to make changes to this expense.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -853,27 +878,28 @@ namespace SmallBusinessSuite {
         //REVENUE CRUD
 
         private void AddRevenue_Click(object sender, RoutedEventArgs e) {
+            List<string> errors = new List<string>();
             string msgTitle = "Revenue Record Error";
             bool canCreate = true;
             decimal amount;
 
             if (RevenueDate.SelectedDate == null) {
-                MessageBox.Show("Please select a valid date for the Revenue record.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid date for the Revenue record.");
                 canCreate = false;
             }
 
             if (!Decimal.TryParse(RevenueAmount.Text, out amount)) {
-                MessageBox.Show("Please input a valid number for the Revenue record.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number for the Revenue record.");
                 canCreate = false;
             }
 
             if (RevenueSource.Text == "") {
-                MessageBox.Show("Please provide a source of the revenue.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please provide a source of the revenue.");
                 canCreate = false;
             }
 
             if (RevenueType.SelectedItem == null) {
-                MessageBox.Show("Please select a valid category for the Revenue record.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid category for the Revenue record.");
                 canCreate = false;
             }
 
@@ -893,36 +919,39 @@ namespace SmallBusinessSuite {
                 );
 
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void UpdateRevenue_Click(object sender, RoutedEventArgs e) {
+            List<string> errors = new List<string>();
             string msgTitle = "Revenue Record Error";
             bool canUpdate = true;
             decimal amount;
 
             if (RevenueDate.SelectedDate == null) {
-                MessageBox.Show("Please select a valid date for the Revenue record.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid date for the Revenue record.");
                 canUpdate = false;
             }
 
             if (!Decimal.TryParse(RevenueAmount.Text, out amount)) {
-                MessageBox.Show("Please input a valid number for the Revenue record.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number for the Revenue record.");
                 canUpdate = false;
             }
 
             if (RevenueSource.Text == "") {
-                MessageBox.Show("Please provide a source of the revenue.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please provide a source of the revenue.");
                 canUpdate = false;
             }
 
             if (RevenueType.SelectedItem == null) {
-                MessageBox.Show("Please select a valid category for the Revenue record.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a valid category for the Revenue record.");
                 canUpdate = false;
             }
 
             if (SelectedRevenue == null) {
-                MessageBox.Show("Please select a Revenue record to update.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a Revenue record to update.");
                 canUpdate = false;
             }
 
@@ -938,6 +967,8 @@ namespace SmallBusinessSuite {
                 dbInterface.UpdateRevenue(SelectedRevenue);
 
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -957,38 +988,39 @@ namespace SmallBusinessSuite {
         private void AddShift_Click(object sender, RoutedEventArgs e) {
             bool canCreate = true;
             string msgTitle = "Shift Record Error";
+            List<string> errors = new List<string>();
             Employee employee = (Employee)EmployeeSelect.SelectedValue;
             Client client = (Client)ClientSelect.SelectedValue;
             DateTime? date = ShiftDate.SelectedDate;
             double hours = 0;
 
             if (employee == null) {
-                MessageBox.Show("Please select an employee for the shift.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select an employee for the shift.");
                 canCreate = false;
             }
 
             if (ShiftDate.SelectedDate == null) {
-                MessageBox.Show("Please input a valid shift date.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid shift date.");
                 canCreate = false;
             }
 
             if (client == null) {
-                MessageBox.Show("Please select a client for the shift?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a client for the shift.");
                 canCreate = false;
             }
 
             if (date != null && dbInterface.ShiftExists(employee.ID, (DateTime)date)) {
-                MessageBox.Show("This shift already exists. Did you intend to update the record?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("This shift already exists. Did you intend to update the record?");
                 canCreate = false;
             }
 
             if (!Double.TryParse(HoursWorked.Text, out hours)) {
-                MessageBox.Show("Please input a valid number in the Hours Worked field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number in the Hours Worked field.");
                 canCreate = false;
             }
 
             if (hours < 1) {
-                MessageBox.Show("Please input a valid number greater than 0 in the Hours Worked field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number greater than 0 in the Hours Worked field.");
                 canCreate = false;
             }
 
@@ -1008,38 +1040,46 @@ namespace SmallBusinessSuite {
                 );
 
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void UpdateShift_Click(object sender, RoutedEventArgs e) {
             bool canUpdate = true;
             string msgTitle = "Shift Record Error";
+            List<string> errors = new List<string>();
             Employee employee = (Employee)EmployeeSelect.SelectedValue;
             Client client = (Client)ClientSelect.SelectedValue;
             double hours = 0;
 
             if (employee == null) {
-                MessageBox.Show("Please select an employee for the shift?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select an employee for the shift.");
+                canUpdate = false;
+            }
+
+            if (ShiftDate.SelectedDate == null) {
+                errors.Add("Please input a valid shift date.");
                 canUpdate = false;
             }
 
             if (client == null) {
-                MessageBox.Show("Please select a client for the shift?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
-                canUpdate = false;
-            }
-
-            if (SelectedShift == null) {
-                MessageBox.Show("Please select a Shift record to update.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please select a client for the shift.");
                 canUpdate = false;
             }
 
             if (!Double.TryParse(HoursWorked.Text, out hours)) {
-                MessageBox.Show("Please input a valid number in the Hours Worked field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number in the Hours Worked field.");
                 canUpdate = false;
             }
 
             if (hours < 1) {
-                MessageBox.Show("Please input a valid number greater than 0 in the Hours Worked field.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                errors.Add("Please input a valid number greater than 0 in the Hours Worked field.");
+                canUpdate = false;
+            }
+
+            if (SelectedShift == null) {
+                errors.Add("Please select a Shift record to update.");
                 canUpdate = false;
             }
 
@@ -1054,6 +1094,8 @@ namespace SmallBusinessSuite {
                 SelectedShift.Client = (Client)ClientSelect.SelectedValue;
                 dbInterface.UpdateShift(SelectedShift);
                 UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
