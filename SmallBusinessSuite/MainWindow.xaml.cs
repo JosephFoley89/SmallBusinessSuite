@@ -228,6 +228,7 @@ namespace SmallBusinessSuite {
                     SelectedPayroll = (Payroll)Data.SelectedItem;
                     PayrollPayments.ItemsSource = dbInterface.GetRelatedPayments(SelectedPayroll.ID);
                     PayrollShifts.ItemsSource = dbInterface.GetRelatedShifts(SelectedPayroll.ID);
+                    PayPeriod.SelectedIndex = SelectedPayroll.Period.ID - 1;
                 } else if (Data.SelectedItem.GetType() == typeof(Client)) {
                     SelectedClient = (Client)Data.SelectedItem;
                     ClientName.Text = SelectedClient.Name;
@@ -1188,15 +1189,9 @@ namespace SmallBusinessSuite {
 
         private void ExecutePayrollJob() {
             PayPeriod period = (PayPeriod)PayPeriod.SelectedValue;
-            Payroll lastRun = dbInterface.GetPayrolls().LastOrDefault();
+            Payroll lastRun = dbInterface.GetPayrolls().OrderByDescending(x => x.Date).First();
 
-            if (lastRun == null) {
-                PayrollJob(period, lastRun);
-            } else if (lastRun.Period.End != period.End) {
-                PayrollJob(period, lastRun);
-            } else {
-                MessageBox.Show($"Payroll has already been run for {period}. Please update payroll if changes need to be made.", "Payroll Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            PayrollJob(period, lastRun);
         }
 
         private void PayrollJob(PayPeriod period, Payroll lastRun) {
