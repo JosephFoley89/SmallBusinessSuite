@@ -129,8 +129,8 @@
                             <DataGrid IsReadOnly="True" x:Name="PayrollData" SelectionChanged="Data_SelectionChanged" d:ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionMode="Single" Margin="0,150,0,0">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
-                                    <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"/>
-                                    <DataGridTextColumn Header="Period" Binding="{Binding Period}"/>
+                                    <DataGridTextColumn Header="Payroll Date" Binding="{Binding Date, StringFormat=d}"/>
+                                    <DataGridTextColumn Header="Pay Period" Binding="{Binding Period}"/>
                                     <DataGridTextColumn Header="Total" Binding="{Binding TotalPaid, StringFormat=C}"/>
                                 </DataGrid.Columns>
                             </DataGrid>

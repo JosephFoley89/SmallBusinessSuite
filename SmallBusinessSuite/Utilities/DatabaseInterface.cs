@@ -906,6 +906,18 @@ namespace SmallBusinessSuite.Utilities {
             command.ExecuteNonQuery();
         }
 
+        public bool ExpenseExists(Expense expense) {
+            SqliteCommand command = new SqliteCommand(
+                $"SELECT * FROM expenses WHERE item = '{expense.Item}' AND amount = {expense.Amount} AND is_recurring = {expense.IsRecurring}",
+                connection
+            );
+
+            OpenConnectionIfNecessary();
+            using (var reader = command.ExecuteReader()) {
+                return reader.HasRows;
+            }
+        }
+
         //PAYMENT CRUD
 
         public void AddPayment(Payment payment) {

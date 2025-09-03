@@ -1,4 +1,5 @@
 ﻿using AdonisUI;
+using DocumentFormat.OpenXml.Spreadsheet;
 using SmallBusinessSuite.Data;
 using SmallBusinessSuite.Data.Enums;
 using SmallBusinessSuite.Data.Models;
@@ -857,28 +858,36 @@ namespace SmallBusinessSuite {
                 canCreate = false;
             }
 
+            if ((ExpenseCategory)ExpenseType.SelectedValue == ExpenseCategory.Payroll) {
+                errors.Add("Payroll items cannot be added manually.");
+                canCreate = false;
+            }
+
             if (canCreate) {
-                dbInterface.AddExpense(
-                    new Expense(
-                        0,
-                        new DateTime(
-                            ExpenseDate.SelectedDate.Value.Year,
-                            ExpenseDate.SelectedDate.Value.Month,
-                            ExpenseDate.SelectedDate.Value.Day
-                        ),
-                        ExpenseName.Text,
-                        amount,
-                        (ExpenseCategory)ExpenseType.SelectedValue,
-                        (bool)IsRecurringExpense.IsChecked,
-                        (Frequency)RF.SelectedValue
-                    )
+                Expense expense = new Expense(
+                    0,
+                    (DateTime)ExpenseDate.SelectedDate,
+                    ExpenseName.Text,
+                    amount,
+                    (ExpenseCategory)ExpenseType.SelectedValue,
+                    (bool)IsRecurringExpense.IsChecked,
+                    (Frequency)RF.SelectedValue
                 );
 
-                if ((bool)IsRecurringExpense.IsChecked) {
-                    AddScheduledExpenses();
-                }
+                Trace.WriteLine($"{expense.Item},{expense.Type},{expense.IsRecurring},{expense.Amount}");
+                Trace.WriteLine($"{SelectedExpense.Item},{SelectedExpense.Type},{SelectedExpense.IsRecurring},{SelectedExpense.Amount}");
 
-                UpdateLists();
+                if (!dbInterface.ExpenseExists(expense)) {
+                    dbInterface.AddExpense(expense);
+
+                    if ((bool)IsRecurringExpense.IsChecked) {
+                        AddScheduledExpenses();
+                    }
+
+                    UpdateLists();
+                } else {
+                    MessageBox.Show("Expense already exists. Did you intend to update the expense?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
@@ -924,11 +933,7 @@ namespace SmallBusinessSuite {
                 Frequency frequency = (Frequency)SelectedExpense.RecurrenceFrequency;
 
                 if (SelectedExpense.Type != ExpenseCategory.Payroll) {
-                    SelectedExpense.Date = new DateTime(
-                        ExpenseDate.SelectedDate.Value.Year,
-                        ExpenseDate.SelectedDate.Value.Month,
-                        ExpenseDate.SelectedDate.Value.Day
-                    );
+                    SelectedExpense.Date = (DateTime)ExpenseDate.SelectedDate;
                     SelectedExpense.Amount = Decimal.Parse(ExpenseAmount.Text);
                     SelectedExpense.Type = (ExpenseCategory)ExpenseType.SelectedValue;
                     SelectedExpense.Item = ExpenseName.Text;
@@ -960,7 +965,19 @@ namespace SmallBusinessSuite {
         }
 
         private void RemoveExpense_Click(object sender, RoutedEventArgs e) {
-            bool canDelete = SelectedExpense != null;
+            bool canDelete = true;
+            List<string> errors = new List<string>();
+            string msgTitle = "Expense Record Error";
+
+            if (SelectedExpense == null) {
+                errors.Add("Please select an expense to remove.");
+                canDelete = false;
+            }
+
+            if (SelectedExpense.Type == ExpenseCategory.Payroll) {
+                errors.Add("Payroll expenses cannot be removed manually. Please utilize the payroll functionality to remove this expense.");
+                canDelete = false;
+            }
 
             if (canDelete) {
                 if (SelectedExpense.IsRecurring) {
@@ -978,7 +995,7 @@ namespace SmallBusinessSuite {
 
                 UpdateLists();
             } else {
-                MessageBox.Show("Please select an Expense record to remove.", "Client Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

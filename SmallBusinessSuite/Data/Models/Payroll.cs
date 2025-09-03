@@ -11,7 +11,7 @@ namespace SmallBusinessSuite.Data.Models {
         public Payroll(int id, PayPeriod period, decimal totalPaid) {
             Period = period;
             ID = id;
-            Date = period != null ? period.End : new DateTime(1,1,1);
+            Date = period != null ? period.End.AddDays(5) : new DateTime(1,1,1);
             TotalPaid = totalPaid;
         }
     }
