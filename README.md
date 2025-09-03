@@ -3,7 +3,6 @@ This software is intended to help small businesses track a number of common conc
 
 ### What You'll Need to Utilize This Software As Is
 - Microsoft Office (for invoicing)
-- Sqlite (for the database)
 
 ### What to Expect
 The SmallBusinessSuite application will create the necessary files and directories associated with them (.json config file, .dotx MS word template, and SQLite database file and its tables) upon launch. Once invoicing has begun, a sub-folder will be created in the previously created directory (C:\SmallBusinessSuite\Invoices\[client-name]\invoice-file.docx).
