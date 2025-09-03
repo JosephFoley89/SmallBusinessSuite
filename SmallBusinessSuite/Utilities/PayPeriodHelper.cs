@@ -20,7 +20,7 @@ namespace SmallBusinessSuite.Utilities {
                 1
             );
 
-            while (current.DayOfWeek != DayOfWeek.Friday) {
+            while (current.DayOfWeek != DayOfWeek.Sunday) {
                 current = current.AddDays(1);
             }
 
@@ -28,11 +28,7 @@ namespace SmallBusinessSuite.Utilities {
                 DateTime start = current.AddDays(-7);
                 DateTime end = current;
 
-                PayPeriod period = new PayPeriod(
-                    0,
-                    new DateTime(start.Year, start.Month, start.Day),
-                    new DateTime(end.Year, end.Month, end.Day)
-                );
+                PayPeriod period = new PayPeriod(periods.Count + 1, start, end);
 
                 if (missingYearlyPeriods) {
                     if (periods.Where(item => item.Start == period.Start).Where(item => item.End == period.End).Count() > 0) {

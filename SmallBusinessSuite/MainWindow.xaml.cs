@@ -79,7 +79,7 @@ namespace SmallBusinessSuite {
 
             RF.IsEnabled = false;
             RF.SelectedIndex = 0;
-            PayPeriod.ItemsSource = periods.Generate(config.RecordLimit);
+            PayPeriod.ItemsSource = periods.Generate(100);
             RowLimit.Text = config.RecordLimit.ToString();
             BusinessAddress.Text = config.BusinessAddress;
             BusinessEmail.Text = config.BusinessEmail;
@@ -1483,8 +1483,8 @@ namespace SmallBusinessSuite {
 
         private void ExecutePayrollJob() {
             PayPeriod period = (PayPeriod)PayPeriod.SelectedValue;
+            period.ID = PayPeriod.SelectedIndex + 1;
             Payroll lastRun = dbInterface.GetPayrolls().OrderByDescending(x => x.Date).FirstOrDefault();
-
             PayrollJob(period, lastRun);
         }
 

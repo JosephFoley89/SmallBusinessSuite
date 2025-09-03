@@ -13,7 +13,7 @@
         }
 
         private TimeSpan GenerateTimeSpan() {
-            return new DateTime(Start.Year, Start.Month, Start.Day).Subtract(new DateTime(End.Year, End.Month, End.Day));
+            return End.Subtract(Start);
         }
 
         public override string ToString() {
