@@ -3,6 +3,7 @@ using SmallBusinessSuite.Data;
 using SmallBusinessSuite.Data.Enums;
 using SmallBusinessSuite.Data.Models;
 using SmallBusinessSuite.Utilities;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,6 +51,7 @@ namespace SmallBusinessSuite {
             ShiftData.ItemsSource = dbInterface.GetShifts();
             PayrollData.ItemsSource = dbInterface.GetPayrolls();
             EmployeeData.ItemsSource = dbInterface.GetEmployees();
+            PaymentEmployee.ItemsSource = dbInterface.GetEmployees();
             ClientData.ItemsSource = dbInterface.GetClients();
             InvoiceRecipient.ItemsSource = dbInterface.GetClients();
             ExpenseData.ItemsSource = dbInterface.GetExpenses();
@@ -68,6 +70,7 @@ namespace SmallBusinessSuite {
             FinancialYear.ItemsSource = years;
             IncomeYearSelect.ItemsSource = years;
             ShiftYearSelect.ItemsSource = years;
+            PaymentReportYear.ItemsSource = years;
             ExpenseMonthSelect.ItemsSource = months;
             ShiftMonthSelect.ItemsSource = months;
             IncomeMonthSelect.ItemsSource = months;
@@ -582,6 +585,83 @@ namespace SmallBusinessSuite {
             IncomeCategorySelect.SelectedItem = null;
             IncomeMonthSelect.SelectedItem = null;
             IncomeYearSelect.SelectedItem = null;
+        }
+
+        private void PaymentReport_SelectionChanged(object sender, RoutedEventArgs e) {
+            int year;
+
+            if (PaymentReportYear.SelectedValue != null) {
+                if (Int32.TryParse(PaymentReportYear.SelectedValue.ToString(), out year)) {
+                    List<Payment> payments = dbInterface.GetPaymentsByYear(year);
+                    List<PaymentReport> report = new List<PaymentReport>();
+
+                    foreach (Payment payment in payments.DistinctBy(p => p.Employee.ID)) {
+                        report.Add(
+                            new PaymentReport(
+                                payment.Employee,
+                                payments.Where(p => p.Employee.ID == payment.Employee.ID).Sum(p => p.Amount),
+                                year
+                            )
+                        );
+                    }
+
+                    PaymentTotals.ItemsSource = null;
+                    PaymentTotals.ItemsSource = report;
+                }
+            }
+        }
+
+        private void PaymentEmployee_SelectionChanged(object sender, RoutedEventArgs e) {
+            int year;
+
+            if (PaymentReportYear.SelectedItem != null) {
+                if (Int32.TryParse(PaymentReportYear.SelectedValue.ToString(), out year)) {
+                    List<Payment> payments = dbInterface.GetPaymentsByYear(year);
+                    List<PaymentReport> report = new List<PaymentReport>();
+                    Employee employee = (Employee)PaymentEmployee.SelectedValue;
+
+                    if (employee != null) {
+                        report.Add(
+                            new PaymentReport(
+                                employee,
+                                payments.Where(p => p.Employee.ID == employee.ID).Sum(p => p.Amount),
+                                year
+                            )
+                        );
+
+                        PaymentReport payment = (PaymentReport)PaymentTotals.SelectedValue;
+
+                        if (report != null) {
+                            List<Payment> p = dbInterface.GetPaymentsByYear(year).Where(p => p.Employee.ID == employee.ID).ToList();
+
+                            EmployeePayments.ItemsSource = null;
+                            EmployeePayments.ItemsSource = p;
+                        }
+
+                        PaymentTotals.ItemsSource = null;
+                        PaymentTotals.ItemsSource = report;
+                    }
+
+                }
+            }
+        }
+
+        private void PaymentTotal_SelectionChanged(object sender, RoutedEventArgs e) {
+            int year;
+
+            if (PaymentReportYear.SelectedItem != null) {
+                if (Int32.TryParse(PaymentReportYear.SelectedItem.ToString(), out year)) {
+                    PaymentReport report = (PaymentReport)PaymentTotals.SelectedValue;
+
+                    if (report != null) {
+                        Employee employee = report.Employee;
+                        List<Payment> payments = dbInterface.GetPaymentsByYear(year).Where(p => p.Employee.ID == employee.ID).ToList();
+
+                        EmployeePayments.ItemsSource = null;
+                        EmployeePayments.ItemsSource = payments;
+                    }
+                }
+            }
         }
 
         //EMPLOYEE CRUD
@@ -1556,6 +1636,11 @@ namespace SmallBusinessSuite {
             }
         }
 
-
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            PaymentEmployee.SelectedItem = null;
+            PaymentReportYear.SelectedItem = null;
+            EmployeePayments.ItemsSource = null;
+            PaymentTotals.ItemsSource = null;
+        }
     }
 }

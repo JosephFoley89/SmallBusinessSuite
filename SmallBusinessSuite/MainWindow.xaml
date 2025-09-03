@@ -400,6 +400,31 @@
                                 </StackPanel>
                             </Grid>
                         </TabItem>
+                        <TabItem Header="Payments">
+                            <Grid>
+                                <Label Content="Year:" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="100"/>
+                                <ComboBox x:Name="PaymentReportYear" HorizontalAlignment="Left" Margin="120,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="PaymentReport_SelectionChanged"/>
+                                <Label Content="Year:" HorizontalAlignment="Left" Margin="15,14,0,0" VerticalAlignment="Top" Width="100"/>
+                                <Label Content="Employee:" HorizontalAlignment="Left" Margin="15,43,0,0" VerticalAlignment="Top" Width="100"/>
+                                <ComboBox x:Name="PaymentEmployee" HorizontalAlignment="Left" Margin="120,39,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="PaymentEmployee_SelectionChanged"/>
+                                <Button x:Name="ClearPaymentData" Content="Clear Values" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Width="230" Click="Button_Click"/>
+                                <DataGrid x:Name="PaymentTotals" d:ItemsSource="{Binding}" Margin="10,97,10,250" SelectionChanged="PaymentTotal_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Employee" Binding="{Binding Employee}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Total Paid" Binding="{Binding Total, StringFormat=C}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Financial Year" Binding="{Binding Year}"></DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <DataGrid x:Name="EmployeePayments" d:ItemsSource="{Binding}" Margin="15,343,10,0" IsReadOnly="True" AutoGenerateColumns="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Amount" Binding="{Binding Amount, StringFormat=C}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="Payroll Run" Binding="{Binding PayrollID}"></DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
                     </TabControl>
                 </Grid>
             </TabItem>

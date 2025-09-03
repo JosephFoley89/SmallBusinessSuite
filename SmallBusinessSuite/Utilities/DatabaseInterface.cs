@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using Microsoft.Data.Sqlite;
 using SmallBusinessSuite.Data;
 using SmallBusinessSuite.Data.Enums;
 using SmallBusinessSuite.Data.Models;
@@ -670,6 +671,32 @@ namespace SmallBusinessSuite.Utilities {
             }
 
             return revenues;
+        }
+
+        public List<Payment> GetPaymentsByYear(int year) {
+            List<Payment> payments = new List<Payment>();
+
+            SqliteCommand command = new SqliteCommand(
+                $"SELECT * FROM PAYMENTS WHERE STRFTIME('%Y',date)='{year}'",
+                connection
+            );
+
+            OpenConnectionIfNecessary();
+            using (var reader = command.ExecuteReader()) {
+                while (reader.Read()) {
+                    payments.Add(
+                        new Payment(
+                            reader.GetInt32(0),
+                            reader.GetDateTime(1),
+                            GetEmployees(reader.GetInt32(2))[0],
+                            reader.GetDecimal(3),
+                            GetPayrolls(reader.GetInt32(4))[0].ID
+                        )
+                    );
+                }
+            }
+
+            return payments;
         }
 
         //CLIENT CRUD
