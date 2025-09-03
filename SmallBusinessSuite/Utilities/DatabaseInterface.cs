@@ -1,10 +1,7 @@
-﻿using DocumentFormat.OpenXml.Presentation;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using SmallBusinessSuite.Data;
 using SmallBusinessSuite.Data.Enums;
 using SmallBusinessSuite.Data.Models;
-using System.Data;
-using System.Data.SqlTypes;
 using System.IO;
 
 namespace SmallBusinessSuite.Utilities {
@@ -1120,6 +1117,18 @@ namespace SmallBusinessSuite.Utilities {
 
             OpenConnectionIfNecessary();
             command.ExecuteNonQuery();
+        }
+
+        public bool InvoicePaymentExists(Revenue revenue) {
+            SqliteCommand command = new SqliteCommand(
+                $"SELECT * FROM revenue_items WHERE item = '{revenue.Item}'",
+                connection
+            );
+
+            OpenConnectionIfNecessary();
+            using (var reader = command.ExecuteReader()) {
+                return reader.HasRows;
+            }
         }
 
         //INVOICE ITEM CRUD

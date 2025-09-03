@@ -184,6 +184,7 @@ namespace SmallBusinessSuite {
             ItemAmount.Clear();
             InvoiceRecipient.SelectedValue = null;
             InvoiceDate.SelectedDate = null;
+            InvoicePaymentDate.SelectedDate = null;
             ItemDescription.Clear();
             ItemHours.Clear();
             ItemRate.Clear();
@@ -242,6 +243,7 @@ namespace SmallBusinessSuite {
                     InvoiceItems.ItemsSource = dbInterface.GetRelatedInvoiceItems(SelectedInvoice.ID);
                     InvoiceRecipient.SelectedIndex = SelectedInvoice.Client.ID - 1;
                     InvoiceDate.SelectedDate = SelectedInvoice.Date;
+                    InvoicePaymentDate.SelectedDate = SelectedInvoice.PaymentDate;
                 } else if (Data.SelectedItem.GetType() == typeof(InvoiceItem)) {
                     SelectedInvoiceItem = (InvoiceItem)Data.SelectedItem;
                     ItemAmount.Text = SelectedInvoiceItem.Amount.ToString();
@@ -1308,15 +1310,19 @@ namespace SmallBusinessSuite {
                     dbInterface.UpdateInvoice(SelectedInvoice);
 
                     if (InvoicePaymentDate != null) {
-                        dbInterface.AddRevenue(
-                            new Revenue(
-                                0,
-                                (DateTime)InvoicePaymentDate.SelectedDate,
-                                $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
-                                SelectedInvoice.Total,
-                                RevenueCategory.Payment
-                            )    
+                        Revenue payment = new Revenue(
+                            0,
+                            (DateTime)InvoicePaymentDate.SelectedDate,
+                            $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
+                            SelectedInvoice.Total,
+                            RevenueCategory.Payment
                         );
+
+                        if (!dbInterface.InvoicePaymentExists(payment)) {
+                            dbInterface.AddRevenue(payment);
+                        } else {
+                            dbInterface.UpdateRevenue(payment);
+                        }
                     }
 
                     UpdateLists();
@@ -1356,15 +1362,19 @@ namespace SmallBusinessSuite {
                 dbInterface.UpdateInvoice(SelectedInvoice);
 
                 if (InvoicePaymentDate != null) {
-                    dbInterface.AddRevenue(
-                        new Revenue(
-                            0,
-                            (DateTime)InvoicePaymentDate.SelectedDate,
-                            $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
-                            SelectedInvoice.Total,
-                            RevenueCategory.Payment
-                        )
+                    Revenue payment = new Revenue(
+                        0,
+                        (DateTime)InvoicePaymentDate.SelectedDate,
+                        $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
+                        SelectedInvoice.Total,
+                        RevenueCategory.Payment
                     );
+
+                    if (!dbInterface.InvoicePaymentExists(payment)) {
+                        dbInterface.AddRevenue(payment);
+                    } else {
+                        dbInterface.UpdateRevenue(payment);
+                    }
                 }
 
                 UpdateLists();
