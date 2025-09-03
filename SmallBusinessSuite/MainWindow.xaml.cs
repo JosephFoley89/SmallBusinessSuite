@@ -371,6 +371,7 @@ namespace SmallBusinessSuite {
             NovExpense.Content = $"Expense:";
             DecExpense.Content = $"Expense:";
         }
+
         private void Item_TextChanged(object sender, TextChangedEventArgs e) {
             try {
                 decimal hours = 0;
@@ -1174,6 +1175,7 @@ namespace SmallBusinessSuite {
                         0,
                         (Client)InvoiceRecipient.SelectedValue,
                         (DateTime)InvoiceDate.SelectedDate,
+                        InvoicePaymentDate.SelectedDate,
                         0,
                         ""
                     );
@@ -1294,6 +1296,7 @@ namespace SmallBusinessSuite {
                         0,
                         (Client)InvoiceRecipient.SelectedValue,
                         (DateTime)InvoiceDate.SelectedDate,
+                        InvoicePaymentDate.SelectedDate,
                         0,
                         ""
                     );
@@ -1303,6 +1306,18 @@ namespace SmallBusinessSuite {
                     dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID);
                     SelectedInvoice.InvoiceNumber = $"INV{SelectedInvoice.Client.ID}{dbInterface.GetInvoiceNumber(SelectedInvoice.Client.ID).ToString("00000")}";
                     dbInterface.UpdateInvoice(SelectedInvoice);
+
+                    if (InvoicePaymentDate != null) {
+                        dbInterface.AddRevenue(
+                            new Revenue(
+                                0,
+                                (DateTime)InvoicePaymentDate.SelectedDate,
+                                $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
+                                SelectedInvoice.Total,
+                                RevenueCategory.Payment
+                            )    
+                        );
+                    }
 
                     UpdateLists();
                 } else {
@@ -1337,7 +1352,20 @@ namespace SmallBusinessSuite {
                 SelectedInvoice.Total = dbInterface.GetRelatedInvoiceItems(SelectedInvoice.ID).Sum(x => x.Amount);
                 SelectedInvoice.Client = (Client)InvoiceRecipient.SelectedValue;
                 SelectedInvoice.Date = (DateTime)InvoiceDate.SelectedDate;
+                SelectedInvoice.PaymentDate = InvoicePaymentDate.SelectedDate;
                 dbInterface.UpdateInvoice(SelectedInvoice);
+
+                if (InvoicePaymentDate != null) {
+                    dbInterface.AddRevenue(
+                        new Revenue(
+                            0,
+                            (DateTime)InvoicePaymentDate.SelectedDate,
+                            $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
+                            SelectedInvoice.Total,
+                            RevenueCategory.Payment
+                        )
+                    );
+                }
 
                 UpdateLists();
             } else {

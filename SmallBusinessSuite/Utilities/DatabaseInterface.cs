@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using SmallBusinessSuite.Data;
 using SmallBusinessSuite.Data.Enums;
 using SmallBusinessSuite.Data.Models;
+using System.Data;
 using System.Data.SqlTypes;
 using System.IO;
 
@@ -146,6 +147,7 @@ namespace SmallBusinessSuite.Utilities {
                         id INTEGER PRIMARY KEY,
                         client INTEGER NOT NULL,
                         date TEXT NOT NULL,
+                        payment_date TEXT,
                         total DECIMAL(10,5) NOT NULL,
                         invoice_number TEXT,
                         FOREIGN KEY (client) REFERENCES clients(id)
@@ -173,7 +175,7 @@ namespace SmallBusinessSuite.Utilities {
             commands.Add(
                 new SqliteCommand(
                     @"CREATE TABLE client_invoice(
-                    id INTEGER PRIMARY KEY,    
+                    id INTEGER PRIMARY KEY,
                     client INTEGER NOT NULL,
                     invoice_number INTEGER NOT NULL,
                     FOREIGN KEY (client) REFERENCES clients(id)
@@ -475,13 +477,15 @@ namespace SmallBusinessSuite.Utilities {
 
             using (SqliteDataReader reader = command.ExecuteReader()) {
                 while (reader.Read()) {
+                    DateTime? PaymentDate = reader.IsDBNull(3) ? null : reader.GetDateTime(3);
                     invoices.Add(
                         new Invoice(
                             reader.GetInt32(0),
                             GetClients(reader.GetInt32(1))[0],
                             reader.GetDateTime(2),
-                            reader.GetDecimal(3),
-                            reader.GetString(4)
+                            PaymentDate,
+                            reader.GetDecimal(4),
+                            reader.GetString(5)
                         )
                     );
                 }
@@ -1169,7 +1173,7 @@ namespace SmallBusinessSuite.Utilities {
 
         public void AddInvoice(Invoice invoice) {
             SqliteCommand command = new SqliteCommand(
-                $"INSERT INTO invoices (client, date, total, invoice_number) VALUES({invoice.Client.ID}, '{invoice.Date}', {invoice.Total}, '{invoice.InvoiceNumber}')",
+                $"INSERT INTO invoices (client, date, payment_date, total, invoice_number) VALUES({invoice.Client.ID}, '{invoice.Date}', '{invoice.PaymentDate}', {invoice.Total}, '{invoice.InvoiceNumber}')",
                 connection
             );
 
@@ -1178,15 +1182,27 @@ namespace SmallBusinessSuite.Utilities {
         }
 
         public void UpdateInvoice(Invoice invoice) {
-            SqliteCommand command = new SqliteCommand(
+            string sql = invoice.PaymentDate == null ?
                 @"UPDATE invoices 
                 SET client = @client,
                 date = @date,
                 total = @total,
                 invoice_number = @number
-                WHERE id = @id",
-                connection
-            );
+                WHERE id = @id"
+                :
+                @"UPDATE invoices 
+                SET client = @client,
+                date = @date,
+                payment_date = @pDate,
+                total = @total,
+                invoice_number = @number
+                WHERE id = @id";
+
+            SqliteCommand command = new SqliteCommand(sql, connection);
+
+            if (invoice.PaymentDate != null) {
+                command.Parameters.AddWithValue("@pDate", invoice.PaymentDate);
+            }
 
             command.Parameters.AddWithValue("@client", invoice.Client.ID);
             command.Parameters.AddWithValue("@date", invoice.Date);
