@@ -1,5 +1,4 @@
 ﻿using AdonisUI;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
 using SmallBusinessSuite.Data;
 using SmallBusinessSuite.Data.Enums;
 using SmallBusinessSuite.Data.Models;
@@ -7,7 +6,6 @@ using SmallBusinessSuite.Utilities;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SmallBusinessSuite {
     public partial class MainWindow : Window {
@@ -312,8 +310,12 @@ namespace SmallBusinessSuite {
         }
 
         private void GenerateInvoice_Click(object sender, RoutedEventArgs e) {
-            generator.UpdatePlaceholders(config, SelectedInvoice, dbInterface);
-            generator.Generate(config.InvoicePlaceholders, SelectedInvoice.Client.Name, SelectedInvoice.Date);
+            if (SelectedInvoice != null) {
+                generator.UpdatePlaceholders(config, SelectedInvoice, dbInterface);
+                generator.Generate(config.InvoicePlaceholders, SelectedInvoice.Client.Name, SelectedInvoice.Date);
+            } else {
+                MessageBox.Show("Please select an invoice to generate.", "Invoice Generation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void InvoiceRecipient_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -368,6 +370,28 @@ namespace SmallBusinessSuite {
             OctExpense.Content = $"Expense:";
             NovExpense.Content = $"Expense:";
             DecExpense.Content = $"Expense:";
+        }
+        private void Item_TextChanged(object sender, TextChangedEventArgs e) {
+            try {
+                decimal hours = 0;
+                decimal rate = 0;
+
+                if (ItemHours.Text != "") {
+                    hours = Decimal.Parse(ItemHours.Text);
+                }
+
+                if (ItemRate.Text != "") {
+                    rate = Decimal.Parse(ItemRate.Text);
+                }
+
+                if (hours > 0 && rate > 0) {
+                    ItemAmount.Text = (hours * rate).ToString();
+                }
+
+
+            } catch (Exception ex) {
+                //do nothing
+            }
         }
 
         //REPORTS
@@ -843,7 +867,7 @@ namespace SmallBusinessSuite {
                         AddScheduledExpenses();
                     }
 
-                        UpdateLists();
+                    UpdateLists();
                 } else {
                     MessageBox.Show("Payroll expenses cannot be altered. Please utilize the Payroll tab to make changes to this expense.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
@@ -1112,31 +1136,63 @@ namespace SmallBusinessSuite {
 
         //INVOICE ITEM CRUD
         private void AddInvoiceItem_Click(object sender, RoutedEventArgs e) {
-            if (SelectedInvoice == null) {
-                SelectedInvoice = new Invoice(
-                    0,
-                    (Client)InvoiceRecipient.SelectedValue,
-                    (DateTime)InvoiceDate.SelectedDate,
-                    0,
-                    ""
-                );
+            string msgTitle = "Invoice Item Error";
+            List<string> errors = new List<string>();
+            bool canAdd = true;
+            double hours;
+            decimal itemRate;
+            decimal itemAmount;
 
-                dbInterface.AddInvoice(SelectedInvoice);
-                SelectedInvoice = dbInterface.GetInvoices().Last();
-                dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID);
-                SelectedInvoice.InvoiceNumber = $"INV{SelectedInvoice.Client.ID}{dbInterface.GetInvoiceNumber(SelectedInvoice.Client.ID).ToString("00000")}";
-                dbInterface.UpdateInvoice(SelectedInvoice);
+            if (!Double.TryParse(ItemHours.Text, out hours)) {
+                errors.Add("Please add a valid number of hours for the invoice.");
+                canAdd = false;
             }
-            
-            try {
+
+            if (!Decimal.TryParse(ItemRate.Text, out itemRate)) {
+                errors.Add("Please add a valid number for the item rate.");
+                canAdd = false;
+            }
+
+            if (!Decimal.TryParse(ItemAmount.Text, out itemAmount)) {
+                errors.Add("Please add a valid number for the item amount.");
+                canAdd = false;
+            }
+
+            if (InvoiceRecipient.SelectedValue == null) {
+                errors.Add("Please select a client to invoice.");
+                canAdd = false;
+            }
+
+            if (InvoiceDate.SelectedDate == null) {
+                errors.Add("Please select a data to invoice the client.");
+                canAdd = false;
+            }
+
+            if (canAdd) {
+                if (SelectedInvoice == null) {
+                    SelectedInvoice = new Invoice(
+                        0,
+                        (Client)InvoiceRecipient.SelectedValue,
+                        (DateTime)InvoiceDate.SelectedDate,
+                        0,
+                        ""
+                    );
+
+                    dbInterface.AddInvoice(SelectedInvoice);
+                    SelectedInvoice = dbInterface.GetInvoices().Last();
+                    dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID);
+                    SelectedInvoice.InvoiceNumber = $"INV{SelectedInvoice.Client.ID}{dbInterface.GetInvoiceNumber(SelectedInvoice.Client.ID).ToString("00000")}";
+                    dbInterface.UpdateInvoice(SelectedInvoice);
+                }
+
                 dbInterface.AddInvoiceItem(
                     new InvoiceItem(
                         0,
                         WorkOrder.Text,
                         ItemDescription.Text,
-                        Double.Parse(ItemHours.Text),
-                        Decimal.Parse(ItemRate.Text),
-                        Decimal.Parse(ItemAmount.Text),
+                        hours,
+                        itemRate,
+                        itemAmount,
                         SelectedInvoice
                     )
                 );
@@ -1146,25 +1202,60 @@ namespace SmallBusinessSuite {
                 generator.UpdatePlaceholders(config, SelectedInvoice, dbInterface);
                 InvoiceItems.ItemsSource = null;
                 InvoiceItems.ItemsSource = dbInterface.GetRelatedInvoiceItems(SelectedInvoice.ID);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "InvoiceItem Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
-            UpdateLists();
         }
 
         private void UpdateInvoiceItem_Click(object sender, RoutedEventArgs e) {
-            if (SelectedInvoiceItem != null) {
+            string msgTitle = "Invoice Item Error";
+            List<string> errors = new List<string>();
+            bool canUpdate = true;
+            double hours;
+            decimal itemRate, itemAmount;
+
+            if (!Double.TryParse(ItemHours.Text, out hours)) {
+                errors.Add("Please add a valid number of hours for the invoice.");
+                canUpdate = false;
+            }
+
+            if (!Decimal.TryParse(ItemRate.Text, out itemRate)) {
+                errors.Add("Please add a valid number for the item rate.");
+                canUpdate = false;
+            }
+
+            if (!Decimal.TryParse(ItemAmount.Text, out itemAmount)) {
+                errors.Add("Please add a valid number for the item amount.");
+                canUpdate = false;
+            }
+
+            if (InvoiceRecipient.SelectedValue == null) {
+                errors.Add("Please select a client to invoice.");
+                canUpdate = false;
+            }
+
+            if (InvoiceDate.SelectedDate == null) {
+                errors.Add("Please select a data to invoice the client.");
+                canUpdate = false;
+            }
+
+            if (SelectedInvoiceItem == null) {
+                errors.Add("Please select an invoice item to update.");
+                canUpdate = false;
+            }
+
+            if (canUpdate) {
                 SelectedInvoiceItem.WorkOrder = WorkOrder.Text;
-                SelectedInvoiceItem.Rate = Decimal.Parse(ItemRate.Text);
-                SelectedInvoiceItem.Hours = Double.Parse(ItemHours.Text);
+                SelectedInvoiceItem.Rate = itemRate;
+                SelectedInvoiceItem.Hours = hours;
                 SelectedInvoiceItem.Description = ItemDescription.Text;
-                SelectedInvoiceItem.Amount = Decimal.Parse(ItemAmount.Text);
+                SelectedInvoiceItem.Amount = itemAmount;
                 dbInterface.UpdateInvoiceItem(SelectedInvoiceItem);
                 dbInterface.UpdateInvoice(SelectedInvoice);
                 generator.UpdatePlaceholders(config, SelectedInvoice, dbInterface);
             } else {
-                MessageBox.Show("Please select an item to update.", "Invoice Item Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             UpdateLists();
@@ -1183,8 +1274,22 @@ namespace SmallBusinessSuite {
         //INVOICE CRUD
 
         private void AddInvoice_Click(object sender, RoutedEventArgs e) {
-            try {
-                if (SelectedInvoice == null) {
+            string msgTitle = "Invoice Record Error";
+            List<string> errors = new List<string>();
+            bool canAdd = true;
+
+            if (InvoiceRecipient.SelectedValue == null) {
+                errors.Add("Please select a client to invoice.");
+                canAdd = false;
+            }
+
+            if (InvoiceDate.SelectedDate == null) {
+                errors.Add("Please select a data to invoice the client.");
+                canAdd = false;
+            }
+
+            if (canAdd) {
+                if (SelectedInvoice.Date != (DateTime)InvoiceDate.SelectedDate && SelectedInvoice.Client != (Client)InvoiceRecipient.SelectedValue) {
                     SelectedInvoice = new Invoice(
                         0,
                         (Client)InvoiceRecipient.SelectedValue,
@@ -1198,25 +1303,46 @@ namespace SmallBusinessSuite {
                     dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID);
                     SelectedInvoice.InvoiceNumber = $"INV{SelectedInvoice.Client.ID}{dbInterface.GetInvoiceNumber(SelectedInvoice.Client.ID).ToString("00000")}";
                     dbInterface.UpdateInvoice(SelectedInvoice);
-                }
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, "Invoice Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
 
-            UpdateLists();
+                    UpdateLists();
+                } else {
+                    MessageBox.Show("This invoice is already in the database. Did you intend to update the record?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void UpdateInvoice_Click(object sender, RoutedEventArgs e) {
-            if (SelectedInvoice != null) {
+            string msgTitle = "Invoice Record Error";
+            List<string> errors = new List<string>();
+            bool canUpdate = true;
+
+            if (SelectedInvoice == null) {
+                errors.Add("Please select an invoice to update.");
+                canUpdate = false;
+            }
+
+            if (InvoiceRecipient.SelectedValue == null) {
+                errors.Add("Please select a client to invoice.");
+                canUpdate = false;
+            }
+
+            if (InvoiceDate.SelectedDate == null) {
+                errors.Add("Please select a date to invoice the client.");
+                canUpdate = false;
+            }
+
+            if (canUpdate) {
                 SelectedInvoice.Total = dbInterface.GetRelatedInvoiceItems(SelectedInvoice.ID).Sum(x => x.Amount);
                 SelectedInvoice.Client = (Client)InvoiceRecipient.SelectedValue;
                 SelectedInvoice.Date = (DateTime)InvoiceDate.SelectedDate;
                 dbInterface.UpdateInvoice(SelectedInvoice);
-            } else {
-                MessageBox.Show("Please select an invoice to update.", "Invoice Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
 
-            UpdateLists();
+                UpdateLists();
+            } else {
+                MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void RemoveInvoice_Click(object sender, RoutedEventArgs e) {
@@ -1224,9 +1350,11 @@ namespace SmallBusinessSuite {
                 int number = dbInterface.GetInvoiceNumber(SelectedInvoice.ID);
                 dbInterface.RemoveInvoice(SelectedInvoice);
                 dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID, number--);
-            }
 
-            UpdateLists();
+                UpdateLists();
+            } else {
+                MessageBox.Show("Please select an invoice to remove.", "Invoice Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         //PAYROLL
@@ -1390,28 +1518,6 @@ namespace SmallBusinessSuite {
             }
         }
 
-        private void Item_TextChanged(object sender, TextChangedEventArgs e) {
-            try {
-                decimal hours = 0;
-                decimal rate = 0;
-
-                if (ItemHours.Text != "") {
-                    hours = Decimal.Parse(ItemHours.Text);
-                }
-
-                if (ItemRate.Text != "") {
-                    rate = Decimal.Parse(ItemRate.Text);
-                }
-
-                if (hours > 0 && rate > 0) {
-                    ItemAmount.Text = (hours * rate).ToString();
-                }
-
-
-            } catch (Exception ex) {
-                //do nothing
-            }
-        }
 
     }
 }
