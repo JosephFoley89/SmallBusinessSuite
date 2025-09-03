@@ -1220,10 +1220,14 @@ namespace SmallBusinessSuite.Utilities {
         //INVOICE CRUD
 
         public void AddInvoice(Invoice invoice) {
-            SqliteCommand command = new SqliteCommand(
-                $"INSERT INTO invoices (client, date, payment_date, total, invoice_number) VALUES({invoice.Client.ID}, '{invoice.Date}', '{invoice.PaymentDate}', {invoice.Total}, '{invoice.InvoiceNumber}')",
-                connection
-            );
+            string sql = invoice.PaymentDate == null ?
+                $"INSERT INTO invoices (client, date, total, invoice_number) " +
+                $"VALUES({invoice.Client.ID}, '{invoice.Date}', {invoice.Total}, '{invoice.InvoiceNumber}')" 
+                :
+                $"INSERT INTO invoices (client, date, payment_date, total, invoice_number) " +
+                $"VALUES({invoice.Client.ID}, '{invoice.Date}', {invoice.PaymentDate}, {invoice.Total}, '{invoice.InvoiceNumber}')";
+
+            SqliteCommand command = new SqliteCommand(sql,connection);
 
             OpenConnectionIfNecessary();
             command.ExecuteNonQuery();

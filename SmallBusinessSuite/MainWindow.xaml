@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:SmallBusinessSuite"
         x:Class="SmallBusinessSuite.MainWindow"
         mc:Ignorable="d"
-        Title="SmallBusinessSuite" Height="700" Width="1000">
+        Title="SmallBusinessSuite" Height="1080" Width="1920">
     <Window.Style>
         <Style TargetType="{x:Type Window}" BasedOn="{StaticResource {x:Type Window}}"/>
     </Window.Style>
@@ -138,31 +138,31 @@
                     </TabItem>
                     <TabItem Header="Invoice">
                         <Grid>
-                            <WebBrowser x:Name="InvoicePreview" Margin="447,48,11,0"/>
+                            <WebBrowser x:Name="InvoicePreview" Margin="959,10,11,10"/>
                             <Label Content="Recipient Company:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,18,0,0" Width="130"/>
-                            <ComboBox x:Name="InvoiceRecipient"  HorizontalAlignment="Left" Margin="290,14,0,0" VerticalAlignment="Top" Width="150" SelectionChanged="InvoiceRecipient_SelectionChanged"/>
+                            <ComboBox x:Name="InvoiceRecipient"  HorizontalAlignment="Left" Margin="327,13,0,0" VerticalAlignment="Top" Width="150" SelectionChanged="InvoiceRecipient_SelectionChanged"/>
                             <Label Content="Invoice Date:" HorizontalAlignment="Left" Margin="10,48,0,0" VerticalAlignment="Top" Width="130"/>
-                            <DatePicker x:Name="InvoiceDate" HorizontalAlignment="Left" Margin="290,43,0,0" VerticalAlignment="Top" Width="150" SelectedDateChanged="InvoiceDate_SelectionChanged"/>
+                            <DatePicker x:Name="InvoiceDate" HorizontalAlignment="Left" Margin="327,42,0,0" VerticalAlignment="Top" Width="150" SelectedDateChanged="InvoiceDate_SelectionChanged"/>
                             <Label Content="Invoice Payment Date:" HorizontalAlignment="Left" Margin="10,79,0,0" VerticalAlignment="Top" Width="130"/>
-                            <DatePicker x:Name="InvoicePaymentDate" HorizontalAlignment="Left" Margin="290,74,0,0" VerticalAlignment="Top" Width="150"/>
-                            <Label Content="Item Work Order:" HorizontalAlignment="Left" Margin="10,109,0,0" VerticalAlignment="Top" Width="130"/>
-                            <TextBox x:Name="WorkOrder" HorizontalAlignment="Left" Margin="290,105,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="150"/>
-                            <Label Content="Item Description:" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" Width="130"/>
-                            <TextBox x:Name="ItemDescription"  HorizontalAlignment="Left" Margin="291,134,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="150"/>
-                            <Label Content="Hours:" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Width="130"/>
-                            <TextBox x:Name="ItemHours" HorizontalAlignment="Left" Margin="291,162,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149" TextChanged="Item_TextChanged"/>
-                            <Label Content="Hourly Rate:" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top" Width="130"/>
-                            <TextBox x:Name="ItemRate" HorizontalAlignment="Left" Margin="291,191,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149"  TextChanged="Item_TextChanged"/>
-                            <Label Content="Amount:" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top" Width="130"/>
-                            <TextBox x:Name="ItemAmount" HorizontalAlignment="Left" Margin="291,220,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149"/>
-                            <Button x:Name="AddItem" Content="Add Item" HorizontalAlignment="Left" Margin="10,249,0,0" VerticalAlignment="Top" Click="AddInvoiceItem_Click" Width="100"/>
-                            <Button x:Name="UpdateItem" Content="Update Item" HorizontalAlignment="Left" Margin="171,249,0,0" VerticalAlignment="Top" Click="UpdateInvoiceItem_Click" Width="100"/>
-                            <Button x:Name="RemoveItem" Content="Remove Item" HorizontalAlignment="Left" Margin="340,249,0,0" VerticalAlignment="Top" Click="RemoveInvoiceItem_Click" Width="100"/>
-                            <Button x:Name="GenerateInvoice" Content="Generate Invoice" Margin="0,14,11,0" VerticalAlignment="Top" Click="GenerateInvoice_Click" HorizontalAlignment="Right" Width="110"/>
-                            <Button x:Name="AddInvoice" Content="Add Invoice" Margin="447,14,0,0" VerticalAlignment="Top" Click="AddInvoice_Click" HorizontalAlignment="Left" Width="110"/>
-                            <Button x:Name="UpdateInvoice" Content="Update Invoice" Margin="577,14,0,0" VerticalAlignment="Top" Click="UpdateInvoice_Click" HorizontalAlignment="Left" Width="110"/>
-                            <Button x:Name="RemoveInvoice" Content="Remove Invoice" Margin="0,14,135,0" VerticalAlignment="Top" Click="RemoveInvoice_Click" HorizontalAlignment="Right" Width="110"/>
-                            <DataGrid x:Name="Invoices" d:ItemsSource="{Binding}" Margin="0,278,0,155" SelectionChanged="Data_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Left" Width="442">
+                            <DatePicker x:Name="InvoicePaymentDate" HorizontalAlignment="Left" Margin="327,73,0,0" VerticalAlignment="Top" Width="150"/>
+                            <Label Content="Item Work Order:" HorizontalAlignment="Left" Margin="523,14,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="WorkOrder" HorizontalAlignment="Left" Margin="803,10,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="150"/>
+                            <Label Content="Item Description:" HorizontalAlignment="Left" Margin="523,43,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemDescription"  HorizontalAlignment="Left" Margin="804,39,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="150"/>
+                            <Label Content="Hours:" HorizontalAlignment="Left" Margin="523,71,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemHours" HorizontalAlignment="Left" Margin="804,67,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149" TextChanged="Item_TextChanged"/>
+                            <Label Content="Hourly Rate:" HorizontalAlignment="Left" Margin="523,100,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemRate" HorizontalAlignment="Left" Margin="804,96,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149"  TextChanged="Item_TextChanged"/>
+                            <Label Content="Amount:" HorizontalAlignment="Left" Margin="523,129,0,0" VerticalAlignment="Top" Width="130"/>
+                            <TextBox x:Name="ItemAmount" HorizontalAlignment="Left" Margin="804,125,0,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" Width="149"/>
+                            <Button x:Name="AddItem" Content="Add Item" HorizontalAlignment="Left" Margin="523,154,0,0" VerticalAlignment="Top" Click="AddInvoiceItem_Click" Width="100"/>
+                            <Button x:Name="UpdateItem" Content="Update Item" HorizontalAlignment="Left" Margin="684,154,0,0" VerticalAlignment="Top" Click="UpdateInvoiceItem_Click" Width="100"/>
+                            <Button x:Name="RemoveItem" Content="Remove Item" HorizontalAlignment="Left" Margin="853,154,0,0" VerticalAlignment="Top" Click="RemoveInvoiceItem_Click" Width="100"/>
+                            <Button x:Name="GenerateInvoice" Content="Generate Invoice" Margin="367,154,0,0" VerticalAlignment="Top" Click="GenerateInvoice_Click" HorizontalAlignment="Left" Width="110"/>
+                            <Button x:Name="AddInvoice" Content="Add Invoice" Margin="10,115,0,0" VerticalAlignment="Top" Click="AddInvoice_Click" HorizontalAlignment="Left" Width="110"/>
+                            <Button x:Name="UpdateInvoice" Content="Update Invoice" Margin="184,115,0,0" VerticalAlignment="Top" Click="UpdateInvoice_Click" HorizontalAlignment="Left" Width="110"/>
+                            <Button x:Name="RemoveInvoice" Content="Remove Invoice" Margin="367,115,0,0" VerticalAlignment="Top" Click="RemoveInvoice_Click" HorizontalAlignment="Left" Width="110"/>
+                            <DataGrid x:Name="Invoices" d:ItemsSource="{Binding}" Margin="0,183,0,10" SelectionChanged="Data_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Left" Width="477">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Invoice" Binding="{Binding}"></DataGridTextColumn>
@@ -172,7 +172,7 @@
                                     <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=C}"></DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <DataGrid x:Name="InvoiceItems" d:ItemsSource="{Binding}" Margin="0,438,0,0" SelectionChanged="Data_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Left" Width="442">
+                            <DataGrid x:Name="InvoiceItems" d:ItemsSource="{Binding}" Margin="482,183,0,10" SelectionChanged="Data_SelectionChanged" AutoGenerateColumns="False" IsReadOnly="True" HorizontalAlignment="Left" Width="472">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID" Binding="{Binding ID}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Work Order" Binding="{Binding WorkOrder}"></DataGridTextColumn>

@@ -705,11 +705,11 @@ namespace SmallBusinessSuite {
                         EmployeePhone.Text
                     )
                 );
-
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void SaveEmployeeChanges_Click(object sender, RoutedEventArgs e) {
@@ -741,10 +741,11 @@ namespace SmallBusinessSuite {
                 SelectedEmployee.Address = EmployeeAddress.Text;
                 SelectedEmployee.PhoneNumber = EmployeePhone.Text;
                 dbInterface.UpdateEmployee(SelectedEmployee);
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgBoxTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void DeleteEmployee_Click(object sender, RoutedEventArgs e) {
@@ -752,10 +753,11 @@ namespace SmallBusinessSuite {
 
             if (canDelete) {
                 dbInterface.RemoveEmployee(SelectedEmployee);
-                UpdateLists();
             }  else {
                 MessageBox.Show("Please select an employee record to remove.", "Employee Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
         
         //CLIENT CRUD
@@ -786,11 +788,11 @@ namespace SmallBusinessSuite {
                         ClientAddress.Text
                     )
                 );
-
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void UpdateClient_Click(object sender, RoutedEventArgs e) {
@@ -807,11 +809,11 @@ namespace SmallBusinessSuite {
                 SelectedClient.PhoneNumber = ClientPhone.Text;
                 SelectedClient.Address = ClientAddress.Text;
                 dbInterface.UpdateClient(SelectedClient);
-
-                UpdateLists();
             } else {
                 MessageBox.Show("Please select a client record to remove.", "Client Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void DeleteClient_Click(object sender, RoutedEventArgs e) {
@@ -819,10 +821,11 @@ namespace SmallBusinessSuite {
 
             if (canDelete) {
                 dbInterface.RemoveClient(SelectedClient);
-                UpdateLists();
             } else {
                 MessageBox.Show("Please select a client record to remove.", "Client Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
         
         //EXPENSE CRUD
@@ -883,14 +886,14 @@ namespace SmallBusinessSuite {
                     if ((bool)IsRecurringExpense.IsChecked) {
                         AddScheduledExpenses();
                     }
-
-                    UpdateLists();
                 } else {
                     MessageBox.Show("Expense already exists. Did you intend to update the expense?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void UpdateExpense_Click(object sender, RoutedEventArgs e) {
@@ -954,14 +957,14 @@ namespace SmallBusinessSuite {
 
                         AddScheduledExpenses();
                     }
-
-                    UpdateLists();
                 } else {
                     MessageBox.Show("Payroll expenses cannot be altered. Please utilize the Payroll tab to make changes to this expense.", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void RemoveExpense_Click(object sender, RoutedEventArgs e) {
@@ -992,11 +995,11 @@ namespace SmallBusinessSuite {
                 } else {
                     dbInterface.RemoveExpense(SelectedExpense);
                 }
-
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         //REVENUE CRUD
@@ -1041,11 +1044,11 @@ namespace SmallBusinessSuite {
                         (RevenueCategory)RevenueType.SelectedValue
                     )
                 );
-
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void UpdateRevenue_Click(object sender, RoutedEventArgs e) {
@@ -1089,11 +1092,11 @@ namespace SmallBusinessSuite {
                 SelectedRevenue.Type = (RevenueCategory)RevenueType.SelectedValue;
                 SelectedRevenue.Item = RevenueSource.Text;
                 dbInterface.UpdateRevenue(SelectedRevenue);
-
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void RemoveRevenue_Click(object sender, RoutedEventArgs e) {
@@ -1101,10 +1104,11 @@ namespace SmallBusinessSuite {
 
             if (canDelete) {
                 dbInterface.RemoveRevenue(SelectedRevenue);
-                UpdateLists();
             } else {
                 MessageBox.Show("Please select a revenue record to remove.", "Revenue Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         //SHIFT CRUD
@@ -1162,11 +1166,11 @@ namespace SmallBusinessSuite {
                         (Client)ClientSelect.SelectedValue
                     )
                 );
-
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void UpdateShift_Click(object sender, RoutedEventArgs e) {
@@ -1221,6 +1225,8 @@ namespace SmallBusinessSuite {
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void RemoveShift_Click(object sender, RoutedEventArgs e) {
@@ -1232,6 +1238,8 @@ namespace SmallBusinessSuite {
             } else {
                 MessageBox.Show("Please select a Shift record to remove.", "Shift Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         //INVOICE ITEM CRUD
@@ -1303,10 +1311,11 @@ namespace SmallBusinessSuite {
                 generator.UpdatePlaceholders(config, SelectedInvoice, dbInterface);
                 InvoiceItems.ItemsSource = null;
                 InvoiceItems.ItemsSource = dbInterface.GetRelatedInvoiceItems(SelectedInvoice.ID);
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void UpdateInvoiceItem_Click(object sender, RoutedEventArgs e) {
@@ -1390,45 +1399,41 @@ namespace SmallBusinessSuite {
             }
 
             if (canAdd) {
-                if (SelectedInvoice.Date != (DateTime)InvoiceDate.SelectedDate && SelectedInvoice.Client != (Client)InvoiceRecipient.SelectedValue) {
-                    SelectedInvoice = new Invoice(
+                SelectedInvoice = new Invoice(
+                    0,
+                    (Client)InvoiceRecipient.SelectedValue,
+                    (DateTime)InvoiceDate.SelectedDate,
+                    InvoicePaymentDate.SelectedDate,
+                    0,
+                    ""
+                );
+
+                dbInterface.AddInvoice(SelectedInvoice);
+                SelectedInvoice = dbInterface.GetInvoices().Last();
+                dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID);
+                SelectedInvoice.InvoiceNumber = $"INV{SelectedInvoice.Client.ID}{dbInterface.GetInvoiceNumber(SelectedInvoice.Client.ID).ToString("00000")}";
+                dbInterface.UpdateInvoice(SelectedInvoice);
+
+                if (InvoicePaymentDate.SelectedDate != null) {
+                    Revenue payment = new Revenue(
                         0,
-                        (Client)InvoiceRecipient.SelectedValue,
-                        (DateTime)InvoiceDate.SelectedDate,
-                        InvoicePaymentDate.SelectedDate,
-                        0,
-                        ""
+                        (DateTime)InvoicePaymentDate.SelectedDate,
+                        $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
+                        SelectedInvoice.Total,
+                        RevenueCategory.Payment
                     );
 
-                    dbInterface.AddInvoice(SelectedInvoice);
-                    SelectedInvoice = dbInterface.GetInvoices().Last();
-                    dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID);
-                    SelectedInvoice.InvoiceNumber = $"INV{SelectedInvoice.Client.ID}{dbInterface.GetInvoiceNumber(SelectedInvoice.Client.ID).ToString("00000")}";
-                    dbInterface.UpdateInvoice(SelectedInvoice);
-
-                    if (InvoicePaymentDate != null) {
-                        Revenue payment = new Revenue(
-                            0,
-                            (DateTime)InvoicePaymentDate.SelectedDate,
-                            $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
-                            SelectedInvoice.Total,
-                            RevenueCategory.Payment
-                        );
-
-                        if (!dbInterface.InvoicePaymentExists(payment)) {
-                            dbInterface.AddRevenue(payment);
-                        } else {
-                            dbInterface.UpdateRevenue(payment);
-                        }
+                    if (dbInterface.InvoicePaymentExists(payment)) {
+                        dbInterface.UpdateRevenue(payment);
+                    } else {
+                        dbInterface.AddRevenue(payment);
                     }
-
-                    UpdateLists();
-                } else {
-                    MessageBox.Show("This invoice is already in the database. Did you intend to update the record?", msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void UpdateInvoice_Click(object sender, RoutedEventArgs e) {
@@ -1458,7 +1463,7 @@ namespace SmallBusinessSuite {
                 SelectedInvoice.PaymentDate = InvoicePaymentDate.SelectedDate;
                 dbInterface.UpdateInvoice(SelectedInvoice);
 
-                if (InvoicePaymentDate != null) {
+                if (InvoicePaymentDate.SelectedDate != null) {
                     Revenue payment = new Revenue(
                         0,
                         (DateTime)InvoicePaymentDate.SelectedDate,
@@ -1467,29 +1472,41 @@ namespace SmallBusinessSuite {
                         RevenueCategory.Payment
                     );
 
-                    if (!dbInterface.InvoicePaymentExists(payment)) {
-                        dbInterface.AddRevenue(payment);
-                    } else {
+                    if (dbInterface.InvoicePaymentExists(payment)) {
                         dbInterface.UpdateRevenue(payment);
+                    } else {
+                        dbInterface.AddRevenue(payment);
                     }
                 }
-
-                UpdateLists();
             } else {
                 MessageBox.Show(string.Join("\r\n", errors), msgTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         private void RemoveInvoice_Click(object sender, RoutedEventArgs e) {
             if (SelectedInvoice != null) {
-                int number = dbInterface.GetInvoiceNumber(SelectedInvoice.ID);
+                int number = dbInterface.GetInvoiceNumber(SelectedInvoice.ID) - 1;
                 dbInterface.RemoveInvoice(SelectedInvoice);
-                dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID, number--);
+                dbInterface.UpdateInvoiceNumber(SelectedInvoice.Client.ID, number);
 
-                UpdateLists();
+                if (SelectedInvoice.PaymentDate != null) {
+                    Revenue payment = new Revenue(
+                        0,
+                        (DateTime)InvoicePaymentDate.SelectedDate,
+                        $"{SelectedInvoice.Client.Name} payment for {SelectedInvoice.InvoiceNumber}",
+                        SelectedInvoice.Total,
+                        RevenueCategory.Payment
+                    );
+
+                    dbInterface.RemoveRevenue(payment);
+                }
             } else {
                 MessageBox.Show("Please select an invoice to remove.", "Invoice Record Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+
+            UpdateLists();
         }
 
         //PAYROLL
@@ -1500,7 +1517,6 @@ namespace SmallBusinessSuite {
 
         private void ExecutePayrollJob() {
             PayPeriod period = (PayPeriod)PayPeriod.SelectedValue;
-            period.ID = PayPeriod.SelectedIndex + 1;
             Payroll lastRun = dbInterface.GetPayrolls().OrderByDescending(x => x.Date).FirstOrDefault();
             PayrollJob(period, lastRun);
         }
@@ -1532,6 +1548,7 @@ namespace SmallBusinessSuite {
             expense = dbInterface.GetExpenses().LastOrDefault();
 
             expense.Parent = lastRun.ID;
+            expense.Date = lastRun.Date;
             dbInterface.UpdateExpense(expense);
 
             foreach (Shift shift in shifts) {
